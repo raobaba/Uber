@@ -58,8 +58,8 @@ paths:
     post:
       summary: Register a new user
       description: Creates a new user with a hashed password and returns a JWT token.
-      tags:
-        - Authentication
+      tags: 
+        - User
       requestBody:
         required: true
         content:
@@ -145,3 +145,129 @@ paths:
                           type: string
                           example: "Invalid Email"
 
+  /api/v1/user/login:
+    post:
+      summary: User login
+      description: Authenticates a user and returns a JWT token.
+      tags: 
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "johndoe@example.com"
+                password:
+                  type: string
+                  format: password
+                  example: "password123"
+      responses:
+        "200":
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  user:
+                    $ref: '#/components/schemas/User'
+        "400":
+          description: Validation error (e.g., invalid email or short password)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        msg:
+                          type: string
+                          example: "Invalid Email"
+                        param:
+                          type: string
+                          example: "email"
+                        location:
+                          type: string
+                          example: "body"
+        "401":
+          description: Invalid email or password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid email or password"
+        "500":
+          description: Internal server error
+
+  /api/v1/user/profile:
+    get:
+      summary: Get user profile
+      description: Returns the profile details of the authenticated user.
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      responses:
+        "200":
+          description: Successfully retrieved user profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "401":
+          description: Unauthorized, token missing or invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Unauthorized access"
+
+  /api/v1/user/logout:
+    get:
+      summary: Logout user
+      description: Logs out the authenticated user by blacklisting the token.
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      responses:
+        "200":
+          description: Successfully logged out
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Logged out"
+        "401":
+          description: Unauthorized, token missing or invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Unauthorized access"
