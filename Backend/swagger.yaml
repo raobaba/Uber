@@ -52,13 +52,50 @@ components:
         socketId:
           type: string
           example: "someSocketId123"
-
+    Captain:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "650a1c3f8f5c9b001c2c4e99"
+        fullname:
+          type: object
+          properties:
+            firstname:
+              type: string
+              example: "John"
+            lastname:
+              type: string
+              example: "Doe"
+        email:
+          type: string
+          example: "captain@example.com"
+        status:
+          type: string
+          enum: ["active", "inactive"]
+          example: "inactive"
+        vehicle:
+          type: object
+          properties:
+            color:
+              type: string
+              example: "Red"
+            plate:
+              type: string
+              example: "XYZ123"
+            capacity:
+              type: integer
+              example: 4
+            vehicleType:
+              type: string
+              enum: ["car", "motorcycle", "auto"]
+              example: "car"
 paths:
   /api/v1/user/register:
     post:
       summary: Register a new user
       description: Creates a new user with a hashed password and returns a JWT token.
-      tags: 
+      tags:
         - User
       requestBody:
         required: true
@@ -149,7 +186,7 @@ paths:
     post:
       summary: User login
       description: Authenticates a user and returns a JWT token.
-      tags: 
+      tags:
         - User
       requestBody:
         required: true
@@ -181,7 +218,7 @@ paths:
                     type: string
                     example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                   user:
-                    $ref: '#/components/schemas/User'
+                    $ref: "#/components/schemas/User"
         "400":
           description: Validation error (e.g., invalid email or short password)
           content:
@@ -230,7 +267,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: "#/components/schemas/User"
         "401":
           description: Unauthorized, token missing or invalid
           content:
@@ -261,6 +298,181 @@ paths:
                   message:
                     type: string
                     example: "Logged out"
+        "401":
+          description: Unauthorized, token missing or invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Unauthorized access"
+
+  /api/v1/captain/register:
+    post:
+      summary: Register a new Captain
+      description: Registers a new Captain and returns a JWT token.
+      tags:
+        - Captain
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullname:
+                  type: object
+                  properties:
+                    firstname:
+                      type: string
+                      example: "John"
+                    lastname:
+                      type: string
+                      example: "Doe"
+                email:
+                  type: string
+                  example: "captain@example.com"
+                password:
+                  type: string
+                  example: "securePassword123"
+                vehicle:
+                  type: object
+                  properties:
+                    color:
+                      type: string
+                      example: "Red"
+                    plate:
+                      type: string
+                      example: "XYZ123"
+                    capacity:
+                      type: integer
+                      example: 4
+                    vehicleType:
+                      type: string
+                      enum: ["car", "motorcycle", "auto"]
+                      example: "car"
+      responses:
+        "201":
+          description: Captain registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "your-jwt-token"
+                  captain:
+                    $ref: "#/components/schemas/Captain"
+        "400":
+          description: Bad request, validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        msg:
+                          type: string
+                          example: "Invalid Email"
+
+  /api/v1/captain/login:
+    post:
+      summary: Login Captain
+      description: Authenticates a Captain and returns a JWT token.
+      tags:
+        - Captain
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "captain@example.com"
+                password:
+                  type: string
+                  example: "securePassword123"
+      responses:
+        "200":
+          description: Successfully logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "your-jwt-token"
+                  captain:
+                    $ref: "#/components/schemas/Captain"
+        "401":
+          description: Unauthorized, invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid email or password"
+
+  /api/v1/captain/profile:
+    get:
+      summary: Get Captain Profile
+      description: Retrieves the authenticated Captain's profile.
+      security:
+        - bearerAuth: []
+      tags:
+        - Captain
+      responses:
+        "200":
+          description: Successfully retrieved profile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  captain:
+                    $ref: "#/components/schemas/Captain"
+        "401":
+          description: Unauthorized, token missing or invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Unauthorized access"
+
+  /api/v1/captain/logout:
+    get:
+      summary: Logout Captain
+      description: Logs out the authenticated Captain by blacklisting the token.
+      security:
+        - bearerAuth: []
+      tags:
+        - Captain
+      responses:
+        "200":
+          description: Successfully logged out
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Logout successfully"
         "401":
           description: Unauthorized, token missing or invalid
           content:
