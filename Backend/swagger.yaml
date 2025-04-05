@@ -1,0 +1,147 @@
+openapi: 3.0.0
+info:
+  title: Uber API
+  version: 1.0.0
+  description: API documentation for Uber ride service.
+
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+  - url: https://uber-ride.onrender.com
+    description: Production server (Render)
+  - url: https://api.uber-ride.com
+    description: Production server (Official)
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      required:
+        - fullname
+        - email
+        - password
+      properties:
+        _id:
+          type: string
+          example: "65f8b123abcd567efg890123"
+        fullname:
+          type: object
+          properties:
+            firstname:
+              type: string
+              minLength: 3
+              example: "John"
+            lastname:
+              type: string
+              minLength: 3
+              example: "Doe"
+        email:
+          type: string
+          format: email
+          example: "johndoe@example.com"
+        password:
+          type: string
+          format: password
+          example: "$2a$10$hashedPassword"
+        socketId:
+          type: string
+          example: "someSocketId123"
+
+paths:
+  /api/v1/user/register:
+    post:
+      summary: Register a new user
+      description: Creates a new user with a hashed password and returns a JWT token.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - fullname
+                - email
+                - password
+              properties:
+                fullname:
+                  type: object
+                  required:
+                    - firstname
+                  properties:
+                    firstname:
+                      type: string
+                      minLength: 3
+                      example: "John"
+                    lastname:
+                      type: string
+                      minLength: 3
+                      example: "Doe"
+                email:
+                  type: string
+                  format: email
+                  example: "johndoe@example.com"
+                socketId:
+                  type: string
+                  format: socketId
+                  example: "someSocketId123"
+                password:
+                  type: string
+                  format: password
+                  minLength: 6
+                  example: "SecurePass123!"
+      responses:
+        "201":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  user:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: "65f8b123abcd567efg890123"
+                      fullname:
+                        type: object
+                        properties:
+                          firstname:
+                            type: string
+                            example: "John"
+                          lastname:
+                            type: string
+                            example: "Doe"
+                      email:
+                        type: string
+                        example: "johndoe@example.com"
+        "400":
+          description: Validation error or user already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User already exists"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        msg:
+                          type: string
+                          example: "Invalid Email"
+
