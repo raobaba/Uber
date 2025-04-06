@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-// import { CaptainDataContext } from "../context/CaptainContext";
+import { CaptainDataContext } from "../context/CaptainContext";
+
 const Captainlogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const {  setCaptain } = useContext(CaptainDataContext)
+
+  const { setCaptain } = React.useContext(CaptainDataContext);
   const navigate = useNavigate();
 
   const submitHandler = async (e) => {
@@ -23,7 +25,8 @@ const Captainlogin = () => {
 
     if (response.status === 200) {
       const data = response.data;
-      // setCaptain(data.captain)
+
+      setCaptain(data.captain);
       localStorage.setItem("token", data.token);
       navigate("/captain-home");
     }
