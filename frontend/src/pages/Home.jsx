@@ -60,7 +60,7 @@ const Home = () => {
     setPickup(e.target.value);
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/maps/get-suggestions`,
+        `${import.meta.env.VITE_BASE_URL}/api/v1/map/get-suggestions`,
         {
           params: { input: e.target.value },
           headers: {
@@ -78,7 +78,7 @@ const Home = () => {
     setDestination(e.target.value);
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/maps/get-suggestions`,
+        `${import.meta.env.VITE_BASE_URL}/api/v1/map/get-suggestions`,
         {
           params: { input: e.target.value },
           headers: {
@@ -186,7 +186,7 @@ const Home = () => {
     setPanelOpen(false);
 
     const response = await axios.get(
-      `${import.meta.env.VITE_BASE_URL}/rides/get-fare`,
+      `${import.meta.env.VITE_BASE_URL}/api/v1/ride/get-fare`,
       {
         params: { pickup, destination },
         headers: {

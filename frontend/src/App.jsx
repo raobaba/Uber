@@ -11,7 +11,6 @@ import CaptainHome from "./pages/CaptainHome";
 import CaptainProtectWrapper from "./pages/CaptainProtectWrapper";
 
 const App = () => {
-  console.log(import.meta.env.VITE_BASE_URL);
   return (
     <div>
       <Routes>
