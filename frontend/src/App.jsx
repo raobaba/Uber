@@ -9,7 +9,7 @@ import UserProtectWrapper from "./pages/UserProtectWrapper";
 import UserLogout from "./pages/UserLogout";
 import CaptainHome from "./pages/CaptainHome";
 import CaptainProtectWrapper from "./pages/CaptainProtectWrapper";
-// AIzaSyABu6UmIKWzMsEmJ9RpVnvDfWigQWflc04
+
 const App = () => {
   console.log(import.meta.env.VITE_BASE_URL);
   return (
