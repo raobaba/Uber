@@ -6,14 +6,14 @@ import React from "react";
 import LiveTracking from "../components/LiveTracking";
 
 const Riding = () => {
-//   const location = useLocation();
-//   const { ride } = location.state || {}; // Retrieve ride data
-//   const { socket } = useContext(SocketContext);
-//   const navigate = useNavigate();
+  //   const location = useLocation();
+  //   const { ride } = location.state || {}; // Retrieve ride data
+  //   const { socket } = useContext(SocketContext);
+  //   const navigate = useNavigate();
 
-//   socket.on("ride-ended", () => {
-//     navigate("/home");
-//   });
+  //   socket.on("ride-ended", () => {
+  //     navigate("/home");
+  //   });
 
   return (
     <div className='h-screen'>

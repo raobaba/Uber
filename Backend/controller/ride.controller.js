@@ -84,6 +84,8 @@ export const confirmRide = async (req, res) => {
   try {
     const ride = await confirmRides({ rideId, captain: req.captain });
 
+    console.log(ride)
+
     sendMessageToSocketId(ride.user.socketId, {
       event: "ride-confirmed",
       data: ride,
