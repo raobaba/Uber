@@ -3,6 +3,7 @@ import { CaptainDataContext } from "../context/CaptainContext";
 
 const CaptainDetails = () => {
   const { captain } = useContext(CaptainDataContext);
+  console.log("captain",captain)
 
   return (
     <div>
@@ -14,7 +15,7 @@ const CaptainDetails = () => {
             alt=''
           />
           <h4 className='text-lg font-medium capitalize'>
-            {captain.fullname.firstname + " " + captain.fullname.lastname}
+            {captain?.fullname?.firstname + " " + captain?.fullname?.lastname}
           </h4>
         </div>
         <div>

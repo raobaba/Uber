@@ -5,51 +5,42 @@ import captainModel from "./models/captain.model.js";
 let io;
 
 export function initializeSocket(server) {
-    io = new Server(server, {  // Use 'new Server' instead of 'socketIo'
-      cors: {
-        origin: "*",
-        methods: ["GET", "POST"],
-      },
+  io = new Server(server, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"],
+    },
+  });
+  io.on("connection", (socket) => {
+    console.log(`Client connected: ${socket.id}`);
+    socket.on("join", async (data) => {
+      const { userId, userType } = data;
+      if (userType === "user") {
+        await userModel.findByIdAndUpdate(userId, { socketId: socket.id });
+      } else if (userType === "captain") {
+        await captainModel.findByIdAndUpdate(userId, { socketId: socket.id });
+      }
     });
-  
-    io.on("connection", (socket) => {
-      console.log(`Client connected: ${socket.id}`);
-      
-      socket.on("join", async (data) => {
-        const { userId, userType } = data;
-  
-        if (userType === "user") {
-          await userModel.findByIdAndUpdate(userId, { socketId: socket.id });
-        } else if (userType === "captain") {
-          await captainModel.findByIdAndUpdate(userId, { socketId: socket.id });
-        }
-      });
-  
-      socket.on("update-location-captain", async (data) => {
-        const { userId, location } = data;
-  
-        if (!location || !location.ltd || !location.lng) {
-          return socket.emit("error", { message: "Invalid location data" });
-        }
-  
-        await captainModel.findByIdAndUpdate(userId, {
-          location: {
-            ltd: location.ltd,
-            lng: location.lng,
-          },
-        });
-      });
-  
-      socket.on("disconnect", () => {
-        console.log(`Client disconnected: ${socket.id}`);
+    socket.on("update-location-captain", async (data) => {
+      const { userId, location } = data;
+      if (!location || !location.ltd || !location.lng) {
+        return socket.emit("error", { message: "Invalid location data" });
+      }
+      await captainModel.findByIdAndUpdate(userId, {
+        location: {
+          ltd: location.ltd,
+          lng: location.lng,
+        },
       });
     });
-  }
-  
+    socket.on("disconnect", () => {
+      console.log(`Client disconnected: ${socket.id}`);
+    });
+  });
+}
 
 export function sendMessageToSocketId(socketId, messageObject) {
   console.log(messageObject);
-
   if (io) {
     io.to(socketId).emit(messageObject.event, messageObject.data);
   } else {
